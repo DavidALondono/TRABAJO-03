@@ -1,0 +1,71 @@
+# .gitignore para el proyecto de clasificación médica
+
+# Dataset (archivos grandes)
+data/raw/
+data/processed/
+*.jpg
+*.jpeg
+*.png
+*.dcm
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Resultados grandes
+results/figures/*.png
+results/figures/*.jpg
+results/logs/*.log
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Modelos entrenados (pueden ser muy grandes)
+models/
+*.pth
+*.pt
+*.ckpt
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+.cache/
+
+# Outputs de notebooks
+*.html
+*.pdf
+
+# Kaggle API
+kaggle.json
+.kaggle/
+
+# Variables de entorno
+.env
+.env.local

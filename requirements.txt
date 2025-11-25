@@ -1,0 +1,47 @@
+# ====================================
+# Clasificación de Imágenes Médicas
+# Trabajo 3 - Visión por Computador
+# ====================================
+
+# Procesamiento y manipulación de datos
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Procesamiento de imágenes
+opencv-python>=4.8.0
+scikit-image>=0.21.0
+Pillow>=10.0.0
+
+# Visualización
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Machine Learning clásico
+scikit-learn>=1.3.0
+
+# Deep Learning
+tensorflow>=2.13.0
+keras>=2.13.0
+
+# Utilidades para notebooks
+jupyter>=1.0.0
+ipykernel>=6.25.0
+ipywidgets>=8.1.0
+
+# Análisis y métricas
+scipy>=1.11.0
+
+# Manejo de archivos y paths
+pathlib2>=2.3.7
+
+# Progress bars
+tqdm>=4.66.0
+
+# Reproducibilidad
+python-dotenv>=1.0.0
+
+# Opcional: para descargar datasets de Kaggle
+kaggle>=1.5.16
+
+# Opcional: para mejorar visualizaciones
+plotly>=5.17.0
