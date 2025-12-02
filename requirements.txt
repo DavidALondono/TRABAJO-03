@@ -1,7 +1,4 @@
-# ====================================
-# Clasificación de Imágenes Médicas
-# Trabajo 3 - Visión por Computador
-# ====================================
+# Trabajo 3 - Clasificación de Imágenes Médicas
 
 # Procesamiento y manipulación de datos
 numpy>=1.24.0
@@ -11,6 +8,7 @@ pandas>=2.0.0
 opencv-python>=4.8.0
 scikit-image>=0.21.0
 Pillow>=10.0.0
+imutils>=0.5.4
 
 # Visualización
 matplotlib>=3.7.0
@@ -40,8 +38,8 @@ tqdm>=4.66.0
 # Reproducibilidad
 python-dotenv>=1.0.0
 
-# Opcional: para descargar datasets de Kaggle
+# para descargar datasets de Kaggle
 kaggle>=1.5.16
 
-# Opcional: para mejorar visualizaciones
+# para mejorar visualizaciones
 plotly>=5.17.0

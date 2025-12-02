@@ -334,10 +334,10 @@ def preprocess_xray(image: np.ndarray,
     Pipeline completo de preprocesamiento para radiografías.
     
     Pasos del pipeline:
-    1. Reducción de ruido (opcional)
+    1. Reducción de ruido 
     2. Normalización de intensidad
     3. Mejora de contraste con CLAHE
-    4. Segmentación de ROI (opcional)
+    4. Segmentación de ROI 
     5. Redimensionamiento al tamaño objetivo
     
     Args:
@@ -353,7 +353,7 @@ def preprocess_xray(image: np.ndarray,
     """
     processed = image.copy()
     
-    # 1. Reducción de ruido (opcional)
+    # 1. Reducción de ruido 
     if apply_denoising:
         processed = denoise_image(processed, method='bilateral', strength=10)
     
@@ -365,7 +365,7 @@ def preprocess_xray(image: np.ndarray,
     if apply_clahe_enhancement:
         processed = apply_clahe(processed, clip_limit=2.0, tile_grid_size=(8, 8))
     
-    # 4. Segmentación de ROI (opcional)
+    # 4. Segmentación de ROI 
     if segment_roi:
         mask, processed = segment_lung_region(processed)
         processed = crop_to_roi(processed, mask, padding=10)

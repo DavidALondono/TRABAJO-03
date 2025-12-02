@@ -26,17 +26,30 @@ La clasificación automática de imágenes médicas consiste en asignar una etiq
 
 Los métodos clásicos se fundamentan en la representación explícita de características relevantes de la imagen. Entre los más utilizados se encuentran:
 
+**Descriptores de Forma:**
+
 a. HOG (Histogram of Oriented Gradients):
-Descriptor de forma basado en la distribución de gradientes locales, útil para capturar bordes, estructuras anatómicas y patrones geométricos presentes en las radiografías.
+Descriptor basado en la distribución de gradientes locales, útil para capturar bordes y estructuras anatómicas.
 
-b. LBP (Local Binary Patterns):
-Método de textura que codifica relaciones espaciales locales entre intensidades vecinas. Ha demostrado eficacia en imágenes médicas por su robustez frente a cambios de iluminación.
+b. Momentos de Hu:
+Siete momentos invariantes a traslación, rotación y escala para describir la forma.
 
-c. GLCM (Gray Level Co-occurrence Matrix) / Características de Haralick:
-Mide la coocurrencia de intensidades y permite caracterizar texturas mediante propiedades como homogeneidad, contraste y energía.
+c. Descriptores de Contorno:
+Área, perímetro y circularidad de las regiones detectadas, útiles para caracterizar la morfología pulmonar.
 
-d. Momentos de Hu:
-Conjunto de siete momentos invariantes a traslación, rotación y escala, tradicionalmente utilizados para describir la forma.
+**Descriptores de Textura:**
+
+d. LBP (Local Binary Patterns):
+Codifica relaciones espaciales locales entre intensidades vecinas, robusto frente a cambios de iluminación.
+
+e. GLCM (Gray Level Co-occurrence Matrix):
+Calcula propiedades de coocurrencia: contraste, correlación, energía y homogeneidad.
+
+f. Filtros de Gabor:
+Banco de filtros con diferentes frecuencias y orientaciones para capturar texturas direccionales.
+
+g. Estadísticas de Primer Orden:
+Media, desviación estándar, percentiles y otras estadísticas básicas de intensidad.
 
 3. Métodos Clásicos de Clasificación
 
@@ -80,7 +93,7 @@ Conversión a escala de grises (cuando aplica): Aunque el dataset ya está en un
 
 CLAHE: Se aplicó Contrast Limited Adaptive Histogram Equalization, técnica recomendada para radiografías debido a su capacidad de mejorar el contraste sin amplificar excesivamente el ruido.
 
-Segmentación (opcional): Se evaluó la pertinencia de aislar regiones anatómicamente relevantes, aunque dada la estructura del dataset se utiliza principalmente el preprocesamiento global.
+Segmentación: Se evaluó la pertinencia de aislar regiones anatómicamente relevantes, aunque dada la estructura del dataset se utiliza principalmente el preprocesamiento global.
 
 El conjunto preprocesado se almacena en data/processed/ para su reutilización en las fases posteriores.
 
@@ -91,19 +104,18 @@ Luego, estos vectores conforman la matriz de características usada por los clas
 
 4. Modelos de Clasificación
 
-A partir de las características extraídas, se entrenaron múltiples clasificadores:
+A partir de las características extraídas, se entrenaron múltiples clasificadores clásicos:
 
-SVM con kernels lineales y RBF
+- **SVM** con kernels lineales y RBF
+- **Random Forest** (100 estimadores)
+- **k-NN** (k=5 vecinos)
+- **Logistic Regression** con regularización
 
-Random Forest
+En paralelo, se entrenó un modelo de Deep Learning:
 
-k-NN
-
-En paralelo, se entrenaron modelos de Deep Learning:
-
-CNN básicas diseñadas desde cero
-
-Transfer Learning con arquitecturas preentrenadas
+- **CNN mejorada** con BatchNormalization, Dropout y callbacks (EarlyStopping, ReduceLROnPlateau)
+- Arquitectura ligera pero efectiva con 3 bloques convolucionales
+- Data augmentation opcional mediante ImageDataGenerator
 
 La evaluación se llevó a cabo utilizando métricas estandarizadas y validación cruzada cuando aplica.
 
@@ -127,7 +139,7 @@ Esta etapa permitió discutir el impacto de los descriptores manuales versus el 
 
 - Python 3.8 o superior
 - pip (gestor de paquetes de Python)
-- Git (opcional, para clonar el repositorio)
+- Git (para clonar el repositorio)
 
 ---
 
@@ -207,25 +219,41 @@ Para más detalles, consultar el archivo `GUIA_DESCARGA_DATASET.md`
 ```
 TRABAJO-03/
 ├── data/
-│   ├── raw/                    # Dataset original
-│   └── processed/              # Imágenes preprocesadas
+│   └── raw/
+│       └── chest_xray/        # Dataset de Kaggle
+│           ├── train/
+│           │   ├── NORMAL/
+│           │   └── PNEUMONIA/
+│           ├── val/
+│           │   ├── NORMAL/
+│           │   └── PNEUMONIA/
+│           └── test/
+│               ├── NORMAL/
+│               └── PNEUMONIA/
 ├── src/
-│   ├── utils.py               # Funciones auxiliares
-│   └── preprocessing.py       # Pipeline de preprocesamiento
+│   ├── __init__.py
+│   ├── descriptors.py         # Descriptores de forma y textura
+│   ├── preprocessing.py       # Pipeline de preprocesamiento
+│   └── utils.py               # Funciones auxiliares
 ├── notebooks/
-│   └── 01_preprocessing_exploration.ipynb  # Notebook Parte 1
+│   ├── 01_preprocessing_exploration.ipynb   # Parte 1: Exploración
+│   ├── 02_shape_and_texture_descriptors.ipynb  # Parte 2: Descriptores
+│   └── 03_Pipeline_Clasificacion.ipynb      # Parte 3: Clasificación completa
 ├── results/
-│   ├── figures/               # Gráficos generados
-│   └── logs/                  # Logs de ejecución
+│   ├── figures/               # Gráficos generados (matrices de confusión, ROC)
+│   ├── logs/                  # Logs de ejecución
+│   └── comparison_summary.csv # Resultados de comparación de modelos
 ├── tests/                     # Tests unitarios
-├── README.md                  # Documentación principal
-├── requirements.txt           # Dependencias
-└── verificar_proyecto.py      # Script de verificación
+├── README.md                  # Este archivo
+├── requirements.txt           # Dependencias del proyecto
+└── reporte_tecnico_trabajo3.md  # Reporte técnico detallado
 ```
 
 ---
 
 ## Ejecución del Proyecto
+
+Los notebooks deben ejecutarse en orden:
 
 ### Parte 1: Preprocesamiento y Exploración
 
@@ -238,7 +266,28 @@ TRABAJO-03/
 jupyter notebook notebooks/01_preprocessing_exploration.ipynb
 ```
 
-O abrir directamente el archivo `.ipynb` en VS Code con la extensión de Jupyter instalada.
+### Parte 2: Extracción de Descriptores
+
+```bash
+jupyter notebook notebooks/02_shape_and_texture_descriptors.ipynb
+```
+
+### Parte 3: Pipeline de Clasificación Completo
+
+```bash
+jupyter notebook notebooks/03_Pipeline_Clasificacion.ipynb
+```
+
+**Nota:** Los notebooks 01 y 02 utilizan módulos de `src/` para reutilizar código. El notebook 03 es autocontenido y puede ejecutarse independientemente.
+
+#### Ejecución del pipeline de clasificación:
+
+1. Asegúrate de tener el dataset en `data/raw/chest_xray/`
+2. Ejecuta las celdas en orden
+3. Cuando llegues a la sección 9, ejecuta: `example_workflow()`
+4. Los resultados se guardarán automáticamente en `results/`
+
+O abrir directamente los archivos `.ipynb` en VS Code con la extensión de Jupyter instalada.
 
 ---
 
@@ -260,11 +309,16 @@ Este script verificará:
 
 ## Estado del Proyecto
 
-- [x] Parte 1: Exploración y Preprocesamiento
-- [ ] Parte 2: Extracción de Características Clásicas
-- [ ] Parte 3: Clasificación con Métodos Clásicos
-- [ ] Parte 4: Deep Learning
-- [ ] Parte 5: Comparación y Análisis Final
+- [x] Parte 1: Exploración y Preprocesamiento (Notebook 01)
+- [x] Parte 2: Extracción de Descriptores de Forma y Textura (Notebook 02)
+- [x] Parte 3: Pipeline Completo de Clasificación (Notebook 03)
+  - [x] Descriptores clásicos (HOG, Hu, Contorno, LBP, GLCM, Gabor)
+  - [x] Clasificadores tradicionales (SVM, Random Forest, k-NN, LogReg)
+  - [x] CNN mejorada con BatchNormalization
+  - [x] Métricas completas (Accuracy, Precision, Recall, F1, Matriz de Confusión, ROC/AUC)
+  - [x] Comparación entre descriptores (Forma vs Textura vs Combinado)
+- [ ] Reporte técnico final
+- [ ] Publicación en plataforma de blogging
 
 ---
 
@@ -289,4 +343,4 @@ Este script verificará:
 
 ---
 
-Última actualización: Noviembre 2025
+Última actualización: Diciembre 2025
