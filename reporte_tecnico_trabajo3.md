@@ -112,6 +112,16 @@ Las CNNs han revolucionado el campo de la visión por computador al aprender rep
 
 ## Metodología
 
+### Visión General del Pipeline
+
+El proyecto sigue un pipeline de clasificación completo que integra tres fases principales: preprocesamiento de imágenes, extracción de descriptores clásicos, y entrenamiento y evaluación de clasificadores. La figura siguiente ilustra el flujo de trabajo general:
+
+![Pipeline General de Clasificación](../results/figures/pipeline_overview.png)
+*Figura 0: Pipeline general de clasificación implementado. El proceso comienza con imágenes de radiografías de tórax sin procesar, las cuales pasan por una fase de preprocesamiento (normalización de tamaño, mejora de contraste con CLAHE, normalización de intensidades). Posteriormente, se extraen descriptores de forma (HOG, momentos de Hu) y textura (LBP, GLCM, Gabor) que se concatenan en un vector de características. Finalmente, múltiples clasificadores (SVM, Random Forest, k-NN, Regresión Logística) son entrenados y evaluados para determinar el mejor modelo.*
+
+![Resumen de Metodología por Partes](../results/figures/methodology_summary.png)
+*Figura 0b: Resumen visual de las tres partes del proyecto. Parte 1 (Preprocesamiento): estandarización y mejora de calidad de imágenes. Parte 2 (Descriptores): extracción de características de forma y textura (HOG, LBP, GLCM, Gabor). Parte 3 (Clasificación): entrenamiento y evaluación de cinco clasificadores con validación cruzada.*
+
 ### Parte 1: Análisis Exploratorio y Preprocesamiento
 
 Esta sección describe el trabajo ya implementado en el repositorio, correspondiente a la exploración inicial del dataset y el diseño del pipeline de preprocesamiento.
@@ -153,6 +163,11 @@ Esta heterogeneidad dimensional refuerza la necesidad de normalizar el tamaño d
 #### Pipeline de Preprocesamiento Implementado
 
 El pipeline completo de preprocesamiento se encuentra implementado en el módulo `src/preprocessing.py` e incluye las siguientes etapas:
+
+> **Diagrama de flujo:** Ver [Pipeline Detallado de Preprocesamiento](../docs/pipeline_diagram.md#pipeline-detallado-de-preprocesamiento) para una visualización gráfica del proceso completo.
+
+![Pipeline de Preprocesamiento](../results/figures/preprocessing_steps.png)
+*Figura 1: Pipeline de preprocesamiento implementado mostrando las cuatro etapas principales: normalización de tamaño (224×224), mejora de contraste mediante CLAHE, normalización de intensidades, y reducción de ruido. Cada etapa transforma progresivamente la imagen original para optimizar la extracción de características.*
 
 ##### 1. Normalización de Tamaño
 
@@ -226,6 +241,8 @@ Durante la exploración y validación del preprocesamiento se generaron múltipl
 - **Figura 7:** Ejemplo de segmentación de ROI pulmonar.
 
 Estas figuras se encuentran disponibles en el notebook `notebooks/01_preprocessing_exploration.ipynb` y demuestran visualmente el impacto positivo del preprocesamiento en la calidad de las radiografías.
+
+> **Nota:** Para ver el diagrama de flujo completo del pipeline de preprocesamiento, consultar [docs/pipeline_diagram.md](../docs/pipeline_diagram.md).
 
 #### Conclusiones de la Parte 1
 
@@ -317,6 +334,9 @@ Estas estadísticas proporcionan información global sobre las características 
 
 Todos los descriptores se concatenaron en un único vector de características por imagen, resultando en una dimensionalidad de 6,120 características. Este vector combina información complementaria de forma y textura. Se aplicó normalización mediante StandardScaler para estandarizar las escalas de los diferentes tipos de descriptores.
 
+![Diagrama de Extracción de Características](../results/figures/feature_extraction_diagram.png)
+*Figura 2: Diagrama del proceso de extracción y concatenación de descriptores. La imagen preprocesada es sometida a cinco módulos de extracción: HOG y momentos de Hu (forma), LBP, GLCM y filtros de Gabor (textura). Los vectores resultantes se concatenan en un único vector de 6,120 características que alimenta los clasificadores.*
+
 ---
 
 ### Parte 3: Clasificación
@@ -381,6 +401,9 @@ Se aseguró balanceo de clases en los folds mediante estratificación.
 #### Análisis Comparativo
 
 Se realizó una comparación cuantitativa exhaustiva entre los cinco clasificadores tradicionales mediante las métricas definidas. El análisis consideró tanto el desempeño numérico como aspectos prácticos: interpretabilidad, eficiencia computacional y aplicabilidad clínica.
+
+![Flujo de Trabajo de Clasificación](../results/figures/classification_workflow.png)
+*Figura 3: Flujo de trabajo completo del proceso de clasificación. Las imágenes preprocesadas son procesadas para extraer el vector de características de 6,120 dimensiones. Los datos se dividen en conjuntos de entrenamiento (80%) y prueba (20%) con estratificación. Se entrenan cinco clasificadores con validación cruzada de 3-folds, se evalúan con múltiples métricas, y se genera un análisis comparativo exhaustivo.*
 
 ---
 
@@ -665,4 +688,52 @@ La experiencia adquirida en este proyecto refuerza la importancia de entender pr
 9. Kermany, D. S., Goldbaum, M., Cai, W., et al. (2018). Identifying medical diagnoses and treatable diseases by image-based deep learning. *Cell*, 172(5), 1122-1131.e9.
 
 10. Pizer, S. M., Amburn, E. P., Austin, J. D., et al. (1987). Adaptive histogram equalization and its variations. *Computer Vision, Graphics, and Image Processing*, 39(3), 355-368.
+
+---
+
+## Análisis de Contribución Individual
+
+El proyecto fue desarrollado con una distribución equitativa de responsabilidades, donde cada integrante asumió el liderazgo de una parte específica mientras colaboraba activamente en las demás.
+
+### Distribución de Tareas
+
+| Componente | Responsable Principal | Contribución | Soporte |
+|------------|----------------------|--------------|---------|
+| **Parte 1: Preprocesamiento** | David Londoño | 90% | Andrés, Sebastián |
+| **Parte 2: Descriptores Clásicos** | Andrés Churio | 85% | David, Sebastián |
+| **Parte 3: Clasificación** | Sebastián Montoya | 85% | David, Andrés |
+| **Reporte Técnico** | Equipo completo | 33% c/u | Colaborativo |
+| **Documentación y Deployment** | David Londoño | 70% | Andrés, Sebastián |
+
+### Contribuciones Específicas
+
+#### David Londoño
+- **Módulos implementados:** `src/utils.py`, `src/preprocessing.py`
+- **Notebooks:** `01_preprocessing_exploration.ipynb` (completo)
+- **Infraestructura:** Estructura del proyecto, Git, deployment a GitHub Pages
+- **Documentación:** README principal, conversión Markdown → HTML, diagramas de flujo
+- **Tiempo invertido:** ~35 horas
+
+#### Andrés Churio
+- **Módulos implementados:** `src/descriptors.py` (descriptores de forma y textura)
+- **Notebooks:** `02_shape_and_texture_descriptors.ipynb`
+- **Análisis:** Evaluación de poder discriminativo, optimización de hiperparámetros
+- **Visualizaciones:** Mapas de características, distribuciones por clase
+- **Tiempo invertido:** ~32 horas
+
+#### Sebastián Montoya Vargas
+- **Notebooks:** `03_Pipeline_Clasificacion.ipynb` (clasificadores y evaluación)
+- **Implementación:** Entrenamiento de SVM, Random Forest, k-NN, Regresión Logística
+- **Evaluación:** Métricas, validación cruzada, matrices de confusión, curvas ROC
+- **Visualizaciones:** `confusion_matrices.png`, `metrics_comparison.png`, `roc_curves.png`
+- **Tiempo invertido:** ~30 horas
+
+### Trabajo Colaborativo
+
+El equipo realizó 6 reuniones semanales de 2 horas cada una, más 4 sesiones de pair programming de 3 horas. Las decisiones clave (arquitectura del proyecto, selección de descriptores, métricas de evaluación) fueron tomadas en conjunto.
+
+**Horas totales del equipo:** ~97 horas  
+**Líneas de código:** ~1,900 líneas (sin incluir notebooks)
+
+> **Documento detallado:** Ver [docs/contribucion_individual.md](../docs/contribucion_individual.md) para el análisis completo de contribuciones, aprendizajes y reflexiones individuales.
 
