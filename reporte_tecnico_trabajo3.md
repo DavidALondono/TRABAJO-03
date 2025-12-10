@@ -35,7 +35,7 @@ El diagnóstico de neumonía mediante radiografías de tórax es una tarea funda
 
 En las últimas décadas, las técnicas de Visión por Computador han demostrado ser herramientas valiosas para apoyar procesos diagnósticos, al ofrecer métodos capaces de analizar imágenes médicas de forma objetiva, reproducible y eficiente. Este trabajo tiene como objetivo comparar dos aproximaciones para la clasificación de radiografías de tórax:
 
-- **Métodos clásicos** basados en descriptores manuales (handcrafted features).
+- **Métodos clásicos** basados en descriptores (handcrafted features).
 - **Técnicas modernas de Deep Learning**, particularmente arquitecturas convolucionales (CNN).
 
 A partir de este análisis se busca evaluar el potencial, limitaciones y aplicabilidad práctica de cada enfoque en el contexto del análisis automatizado de imágenes médicas.
@@ -441,6 +441,17 @@ La calidad visual mejorada de las imágenes preprocesadas sugiere que la extracc
 ### Resultados de la Parte 2: Descriptores Clásicos
 
 La extracción de descriptores se realizó exitosamente sobre el conjunto completo de radiografías preprocesadas. El vector de características resultante combina 6,120 descriptores que capturan información complementaria de forma (HOG, Hu, contornos) y textura (LBP, GLCM, Gabor, estadísticas de primer orden). La normalización mediante StandardScaler permitió que descriptores de diferentes escalas contribuyeran equitativamente al proceso de clasificación.
+
+**Descriptores de forma - Histogram of oriented gradients**
+
+
+
+
+**Descriptores de forma - Momentos de Hu**
+
+
+
+
 
 ### Resultados de la Parte 3: Clasificación
 
