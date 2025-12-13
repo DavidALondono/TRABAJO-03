@@ -116,10 +116,10 @@ Las CNNs han revolucionado el campo de la visión por computador al aprender rep
 
 El proyecto sigue un pipeline de clasificación completo que integra tres fases principales: preprocesamiento de imágenes, extracción de descriptores clásicos, y entrenamiento y evaluación de clasificadores. La figura siguiente ilustra el flujo de trabajo general:
 
-![Pipeline General de Clasificación](.../results/figures/pipeline_overview.png)
+![Pipeline General de Clasificación](results/figures/pipeline_overview.png)
 *Figura 0: Pipeline general de clasificación implementado. El proceso comienza con imágenes de radiografías de tórax sin procesar, las cuales pasan por una fase de preprocesamiento (normalización de tamaño, mejora de contraste con CLAHE, normalización de intensidades). Posteriormente, se extraen descriptores de forma (HOG, momentos de Hu) y textura (LBP, GLCM, Gabor) que se concatenan en un vector de características. Finalmente, múltiples clasificadores (SVM, Random Forest, k-NN, Regresión Logística) son entrenados y evaluados para determinar el mejor modelo.*
 
-![Resumen de Metodología por Partes](.../results/figures/methodology_summary.png)
+![Resumen de Metodología por Partes](results/figures/methodology_summary.png)
 *Figura 0b: Resumen visual de las tres partes del proyecto. Parte 1 (Preprocesamiento): estandarización y mejora de calidad de imágenes. Parte 2 (Descriptores): extracción de características de forma y textura (HOG, LBP, GLCM, Gabor). Parte 3 (Clasificación): entrenamiento y evaluación de cinco clasificadores con validación cruzada.*
 
 ### Parte 1: Análisis Exploratorio y Preprocesamiento
@@ -141,7 +141,7 @@ El dataset está dividido en tres conjuntos:
 
 **Análisis de distribución:** Se observó un desbalance significativo en el conjunto de entrenamiento, con aproximadamente 74% de imágenes con neumonía y 26% normales. Este desbalance debe considerarse durante el entrenamiento mediante técnicas como pesos de clase balanceados o data augmentation.
 
-![Distribución de Clases](../results/figures/blog/01_class_distribution.png)
+![Distribución de Clases](results/figures/blog/01_class_distribution.png)
 *Figura 1: Distribución de clases en los conjuntos de entrenamiento, validación y prueba. El gráfico de barras (izquierda) muestra el número absoluto de imágenes por clase y conjunto. El gráfico circular (derecha) evidencia el desbalance en el conjunto de entrenamiento: 74.2% PNEUMONIA vs 25.7% NORMAL. Este desbalance requiere estrategias especiales durante el entrenamiento para evitar sesgos hacia la clase mayoritaria.*
 
 #### Exploración Visual
@@ -152,7 +152,7 @@ Se cargaron y visualizaron muestras representativas de ambas clases utilizando g
 - **Variabilidad en posicionamiento:** Ligeras rotaciones y desplazamientos del paciente.
 - **Patrones diagnósticos:** Las radiografías con neumonía presentan opacidades difusas, consolidaciones o infiltrados que alteran la textura pulmonar normal.
 
-![Ejemplos de Radiografías](../results/figures/blog/02_sample_images.png)
+![Ejemplos de Radiografías](results/figures/blog/02_sample_images.png)
 *Figura 2: Grilla de ejemplos representativos de ambas clases. Filas superiores: radiografías NORMAL mostrando campos pulmonares claros y bien definidos. Filas inferiores: radiografías con PNEUMONIA evidenciando opacidades difusas, consolidaciones y patrones de infiltrado. Se observa considerable variabilidad en dimensiones originales (indicadas debajo de cada imagen), calidad de adquisición y posicionamiento del paciente. Esta heterogeneidad justifica la necesidad de un pipeline robusto de preprocesamiento.*
 
 Estas observaciones justificaron la necesidad de un preprocesamiento robusto para estandarizar las imágenes antes del análisis cuantitativo.
@@ -164,7 +164,7 @@ Se analizaron las dimensiones originales de las imágenes en el conjunto de entr
 - **Dimensiones:** Las imágenes tienen tamaños diversos, con anchos y altos que varían considerablemente.
 - **Relación de aspecto:** La mayoría de las radiografías mantienen relaciones de aspecto similares, pero no idénticas.
 
-![Distribución de Tamaños](../results/figures/blog/03_size_distribution.png)
+![Distribución de Tamaños](results/figures/blog/03_size_distribution.png)
 *Figura 3: Análisis de variabilidad dimensional en una muestra de 400 imágenes del conjunto de entrenamiento. (Izquierda) Scatter plot mostrando la distribución de dimensiones originales, con amplia dispersión alrededor del target de 224×224 píxeles. (Centro y Derecha) Histogramas de anchos y altos evidenciando variabilidad significativa, con picos alrededor de 1000-2500 píxeles. Las líneas rojas punteadas indican las dimensiones objetivo (224 píxeles) hacia las cuales todas las imágenes serán normalizadas.*
 
 Esta heterogeneidad dimensional refuerza la necesidad de normalizar el tamaño de todas las imágenes a una dimensión estándar (224×224 píxeles) para permitir el procesamiento en lotes y la compatibilidad con arquitecturas CNN preentrenadas.
@@ -175,7 +175,7 @@ El pipeline completo de preprocesamiento se encuentra implementado en el módulo
 
 > **Diagrama de flujo:** Ver [Pipeline Detallado de Preprocesamiento](../docs/pipeline_diagram.md#pipeline-detallado-de-preprocesamiento) para una visualización gráfica del proceso completo.
 
-![Pipeline de Preprocesamiento](../results/figures/preprocessing_steps.png)
+![Pipeline de Preprocesamiento](results/figures/preprocessing_steps.png)
 *Figura 1: Pipeline de preprocesamiento implementado mostrando las cuatro etapas principales: normalización de tamaño (224×224), mejora de contraste mediante CLAHE, normalización de intensidades, y reducción de ruido. Cada etapa transforma progresivamente la imagen original para optimizar la extracción de características.*
 
 ##### 1. Normalización de Tamaño
@@ -241,16 +241,16 @@ El pipeline completo de preprocesamiento se encuentra implementado en el módulo
 
 El pipeline de preprocesamiento transforma progresivamente las radiografías originales heterogéneas en imágenes estandarizadas de alta calidad. A continuación se presentan los resultados visuales de cada etapa:
 
-![Pipeline de Preprocesamiento Paso a Paso](../results/figures/blog/04_preprocessing_pipeline.png)
+![Pipeline de Preprocesamiento Paso a Paso](results/figures/blog/04_preprocessing_pipeline.png)
 *Figura 4: Transformación progresiva de una radiografía con neumonía a través del pipeline de preprocesamiento. Fila superior: (1) Imagen original con alta variabilidad en tamaño y contraste, (2) Redimensionada a 224×224 píxeles manteniendo información estructural, (3) Mejora de contraste mediante CLAHE revelando detalles anatómicos sutiles, (4) Normalización de intensidades al rango [0,1] para consistencia. Fila inferior: Histogramas de intensidades mostrando la evolución de la distribución de píxeles en cada etapa. CLAHE redistribuye las intensidades de manera adaptativa mientras que la normalización estandariza el rango dinámico.*
 
-![Comparación CLAHE vs Ecualización Estándar](../results/figures/blog/05_clahe_vs_equalization.png)
+![Comparación CLAHE vs Ecualización Estándar](results/figures/blog/05_clahe_vs_equalization.png)
 *Figura 5: Comparación crítica entre dos técnicas de mejora de contraste en una radiografía normal. Fila superior: (Izquierda) Imagen original con contraste limitado, (Centro) CLAHE aplicado preservando estructuras anatómicas finas sin saturación, (Derecha) Ecualización de histograma estándar mostrando sobre-amplificación de contraste y artefactos visuales. Fila inferior: Histogramas correspondientes evidenciando que CLAHE (verde) produce una distribución más controlada y natural comparada con la ecualización estándar (roja) que tiende a extremos. CLAHE es claramente superior para aplicaciones médicas donde la preservación de detalles anatómicos es crítica.*
 
-![Grilla Antes/Después del Preprocesamiento](../results/figures/blog/06_before_after_grid.png)
+![Grilla Antes/Después del Preprocesamiento](results/figures/blog/06_before_after_grid.png)
 *Figura 6: Comparación antes/después del pipeline completo en 4 imágenes (2 NORMAL, 2 PNEUMONIA). Para cada imagen se muestra: (Columna 1) Original redimensionada, (Columna 2) Completamente preprocesada, (Columnas 3-4) Histogramas antes y después. Se observa consistentemente que el preprocesamiento: (a) Mejora el contraste revelando estructuras pulmonares, (b) Normaliza la distribución de intensidades entre imágenes, (c) Mantiene las características discriminativas entre clases. Los histogramas preprocesados (verde) son más uniformes y comparables entre imágenes, facilitando la extracción posterior de características.*
 
-> **Nota:** Para ver el diagrama de flujo completo del pipeline de preprocesamiento, consultar [docs/pipeline_diagram.md](../docs/pipeline_diagram.md).
+> **Nota:** Para ver el diagrama de flujo completo del pipeline de preprocesamiento, consultar [docs/pipeline_diagram.md](docs/pipeline_diagram.md).
 
 #### Conclusiones de la Parte 1
 
@@ -286,7 +286,7 @@ Se implementó el descriptor HOG con los siguientes parámetros:
 
 HOG captura la distribución de orientaciones de gradientes locales, útil para identificar estructuras y bordes característicos de patrones pulmonares en las radiografías.
 
-![Descriptor HOG](../results/figures/blog/07_hog_descriptor.png)
+![Descriptor HOG](results/figures/blog/07_hog_descriptor.png)
 *Figura 7: Visualización del descriptor HOG aplicado a radiografías NORMAL y PNEUMONIA. Para cada clase se muestra: (Columna 1) Imagen preprocesada original, (Columna 2) Mapa de características HOG donde la intensidad y orientación de los gradientes revelan bordes y estructuras anatómicas, (Columna 3) Distribución del vector de características HOG de alta dimensionalidad, (Columna 4) Estadísticas del descriptor. El HOG captura efectivamente los bordes de costillas, diafragma y estructuras pulmonares. Se observan diferencias en la distribución de orientaciones entre clases: las radiografías con neumonía (fila inferior) presentan mayor variabilidad en las orientaciones debido a infiltrados que alteran la estructura pulmonar normal.*
 
 ##### Momentos de Hu
@@ -316,7 +316,7 @@ Se implementarán descriptores diseñados para caracterizar patrones de textura 
 
 Se implementó LBP uniforme con radio de 3 píxeles y 24 puntos de vecindad. Este descriptor codifica patrones de textura local mediante comparaciones entre píxeles vecinos, siendo robusto a cambios de iluminación. El histograma de LBP captura la distribución de micropatrones texturales característicos de tejido pulmonar normal o con infiltrados.
 
-![Descriptor LBP](../results/figures/blog/08_lbp_descriptor.png)
+![Descriptor LBP](results/figures/blog/08_lbp_descriptor.png)
 *Figura 8: Visualización del descriptor LBP (Local Binary Patterns) en radiografías de ambas clases. Para cada clase: (Columna 1) Imagen preprocesada, (Columna 2) Mapa LBP en escala de colores mostrando la codificación de patrones de textura local, (Columna 3) Histograma de patrones LBP revelando la distribución de microestructuras texturales, (Columna 4) Zoom de una región de 40×40 píxeles mostrando la textura local detallada. El descriptor LBP es particularmente sensible a patrones repetitivos y microestructuras. Las radiografías NORMAL (fila superior) presentan texturas más homogéneas y regulares, mientras que las de PNEUMONIA (fila inferior) muestran texturas más heterogéneas y complejas debido a infiltrados e irregularidades en el tejido pulmonar.*
 
 ##### GLCM (Gray Level Co-occurrence Matrix) y Características de Haralick
@@ -330,14 +330,14 @@ Se calcularon matrices de coocurrencia en múltiples direcciones (0°, 45°, 90�
 
 Estas características son particularmente efectivas para distinguir entre tejido pulmonar normal y patrones de neumonía.
 
-![GLCM y Características de Haralick](../results/figures/blog/09_glcm_haralick.png)
+![GLCM y Características de Haralick](results/figures/blog/09_glcm_haralick.png)
 *Figura 9: Análisis mediante Matriz de Co-ocurrencia (GLCM) y características de Haralick. Para cada clase: (Columna 1) Imagen preprocesada, (Columna 2) GLCM calculada en dirección 0° mostrando las relaciones espaciales entre niveles de gris, (Columna 3) Gráfico de barras comparando las 4 características de Haralick (Contraste, Homogeneidad, Energía, Correlación) en cuatro direcciones (0°, 45°, 90°, 135°), (Columna 4) Resumen estadístico de los promedios. Las radiografías NORMAL (fila superior) tienden a mostrar mayor homogeneidad y energía (texturas más regulares), mientras que las de PNEUMONIA (fila inferior) presentan mayor contraste y menor homogeneidad (texturas más caóticas). Estas diferencias cuantitativas son discriminativas para la clasificación.*
 
 ##### Filtros de Gabor
 
 Se aplicó un banco de filtros de Gabor con múltiples frecuencias y orientaciones para capturar información de textura direccional. Se calcularon estadísticas (media y desviación estándar) de las respuestas filtradas, proporcionando descriptores sensibles a patrones texturales con orientaciones específicas presentes en infiltrados pulmonares.
 
-![Filtros de Gabor](../results/figures/blog/10_gabor_filters.png)
+![Filtros de Gabor](results/figures/blog/10_gabor_filters.png)
 *Figura 10: Banco de filtros de Gabor y sus respuestas en una radiografía con neumonía. Fila superior izquierda: Imagen original. Fila superior: Kernels de filtros de Gabor en 4 orientaciones (0°, 45°, 90°, 135°) mostrando la selectividad direccional. Fila media: Respuestas filtradas revelando estructuras y texturas en cada orientación específica. Los colores intensos indican alta activación ante patrones direccionales. Gráfico de barras: Energía media de respuesta por dirección con barras de error, mostrando qué orientaciones son más prominentes en la imagen. Imagen inferior: Respuesta combinada de todas las orientaciones resaltando regiones con textura compleja. Texto explicativo: Los filtros de Gabor son especialmente útiles para detectar infiltrados pulmonares que tienen orientaciones preferentes.*
 
 ##### Estadísticas de Primer Orden
@@ -354,14 +354,14 @@ Estas estadísticas proporcionan información global sobre las características 
 
 Para comprender mejor el poder discriminativo de cada descriptor, se presenta una comparación lado a lado de todos los descriptores aplicados a la misma imagen:
 
-![Comparación de Descriptores](../results/figures/blog/11_descriptor_comparison.png)
+![Comparación de Descriptores](results/figures/blog/11_descriptor_comparison.png)
 *Figura 11: Comparación directa de los cuatro descriptores principales aplicados a las mismas imágenes NORMAL (fila superior) y PNEUMONIA (fila intermedia). Para cada descriptor se muestra su representación visual característica. (Columna 1) Imagen preprocesada original, (Columna 2) Mapa HOG resaltando gradientes y bordes, (Columna 3) Mapa LBP capturando micropatrones de textura local, (Columna 4) Respuesta de filtro de Gabor (orientación 0°) sensible a estructuras lineales. Fila inferior: Identificación de cada descriptor. Esta comparación revela que cada descriptor captura aspectos complementarios de la información visual: HOG es sensible a formas y contornos, LBP a microestructuras repetitivas, y Gabor a patrones direccionales. La combinación de todos estos descriptores en un vector único de 6,120 características proporciona una representación rica y multifacética de cada radiografía.*
 
 #### Construcción del Vector de Características
 
 Todos los descriptores se concatenaron en un único vector de características por imagen, resultando en una dimensionalidad de 6,120 características. Este vector combina información complementaria de forma y textura. Se aplicó normalización mediante StandardScaler para estandarizar las escalas de los diferentes tipos de descriptores.
 
-![Diagrama de Extracción de Características](../results/figures/feature_extraction_diagram.png)
+![Diagrama de Extracción de Características](results/figures/feature_extraction_diagram.png)
 *Figura 12: Diagrama del proceso de extracción y concatenación de descriptores. La imagen preprocesada es sometida a cinco módulos de extracción: HOG y momentos de Hu (forma), LBP, GLCM y filtros de Gabor (textura). Los vectores resultantes se concatenan en un único vector de 6,120 características que alimenta los clasificadores.*
 
 ---
@@ -429,7 +429,7 @@ Se aseguró balanceo de clases en los folds mediante estratificación.
 
 Se realizó una comparación cuantitativa exhaustiva entre los cinco clasificadores tradicionales mediante las métricas definidas. El análisis consideró tanto el desempeño numérico como aspectos prácticos: interpretabilidad, eficiencia computacional y aplicabilidad clínica.
 
-![Flujo de Trabajo de Clasificación](../results/figures/classification_workflow.png)
+![Flujo de Trabajo de Clasificación](results/figures/classification_workflow.png)
 *Figura 3: Flujo de trabajo completo del proceso de clasificación. Las imágenes preprocesadas son procesadas para extraer el vector de características de 6,120 dimensiones. Los datos se dividen en conjuntos de entrenamiento (80%) y prueba (20%) con estratificación. Se entrenan cinco clasificadores con validación cruzada de 3-folds, se evalúan con múltiples métricas, y se genera un análisis comparativo exhaustivo.*
 
 ---
@@ -560,7 +560,7 @@ Los cinco clasificadores fueron evaluados utilizando validación cruzada. A cont
 
 Las matrices de confusión revelan patrones importantes en el comportamiento de los clasificadores:
 
-![Matrices de Confusión de los 5 Clasificadores](/results/figures/confusion_matrices.png)
+![Matrices de Confusión de los 5 Clasificadores](results/figures/confusion_matrices.png)
 *Figura 1: Matrices de confusión para los cinco clasificadores evaluados. Se observa que SVM RBF minimiza los falsos negativos (esquina inferior izquierda), aspecto crítico en diagnóstico médico.*
 
 **Interpretación detallada por clasificador:**
@@ -618,7 +618,7 @@ SVM RBF con recall de 98.88% se alinea perfectamente con este requisito. Los ~5 
 
 El análisis de las curvas ROC confirma el excelente desempeño de los clasificadores:
 
-![Curvas ROC de los 5 Clasificadores](../results/figures/roc_curves.png)
+![Curvas ROC de los 5 Clasificadores](results/figures/roc_curves.png)
 *Figura 2: Curvas ROC con áreas sombreadas mostrando el AUC para cada clasificador. SVM RBF (línea azul) muestra la mejor discriminación con AUC ≈ 0.99, muy cercana al clasificador perfecto.*
 
 **Valores de AUC obtenidos:**
@@ -677,7 +677,7 @@ La alta confiabilidad (AUC > 0.95) reduce significativamente el riesgo de errore
 
 El gráfico de comparación de métricas muestra:
 
-![Comparación de Métricas entre Clasificadores](../results/figures/metrics_comparison.png)
+![Comparación de Métricas entre Clasificadores](results/figures/metrics_comparison.png)
 *Figura 3: Comparación visual de las cuatro métricas principales (Accuracy, Precision, Recall, F1-Score) para los cinco clasificadores. Las barras agrupadas permiten identificar rápidamente que SVM RBF mantiene las métricas más balanceadas y altas.*
 
 **Análisis detallado del gráfico:**
