@@ -119,7 +119,7 @@ El proyecto sigue un pipeline de clasificación completo que integra tres fases 
 ![Pipeline General de Clasificación](../results/figures/pipeline_overview.png)
 *Figura 0: Pipeline general de clasificación implementado. El proceso comienza con imágenes de radiografías de tórax sin procesar, las cuales pasan por una fase de preprocesamiento (normalización de tamaño, mejora de contraste con CLAHE, normalización de intensidades). Posteriormente, se extraen descriptores de forma (HOG, momentos de Hu) y textura (LBP, GLCM, Gabor) que se concatenan en un vector de características. Finalmente, múltiples clasificadores (SVM, Random Forest, k-NN, Regresión Logística) son entrenados y evaluados para determinar el mejor modelo.*
 
-![Resumen de Metodología por Partes](../results/figures/methodology_summary.png)
+![Resumen de Metodología por Partes](./results/figures/methodology_summary.png)
 *Figura 0b: Resumen visual de las tres partes del proyecto. Parte 1 (Preprocesamiento): estandarización y mejora de calidad de imágenes. Parte 2 (Descriptores): extracción de características de forma y textura (HOG, LBP, GLCM, Gabor). Parte 3 (Clasificación): entrenamiento y evaluación de cinco clasificadores con validación cruzada.*
 
 ### Parte 1: Análisis Exploratorio y Preprocesamiento
