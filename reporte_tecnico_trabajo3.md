@@ -560,7 +560,7 @@ Los cinco clasificadores fueron evaluados utilizando validación cruzada. A cont
 
 Las matrices de confusión revelan patrones importantes en el comportamiento de los clasificadores:
 
-![Matrices de Confusión de los 5 Clasificadores](.../results/figures/confusion_matrices.png)
+![Matrices de Confusión de los 5 Clasificadores](/results/figures/confusion_matrices.png)
 *Figura 1: Matrices de confusión para los cinco clasificadores evaluados. Se observa que SVM RBF minimiza los falsos negativos (esquina inferior izquierda), aspecto crítico en diagnóstico médico.*
 
 **Interpretación detallada por clasificador:**
